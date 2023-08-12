@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f2f2f2;
+      background-color: transparent;
       margin: 0;
       display: flex;
       justify-content: center;
@@ -55,11 +55,11 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      border: 6px solid #f3f3f3;
-      border-top: 6px solid #3498db;
+      border: 10px solid #fcba03;
+      border-top: 10px solid #3498db;
       border-radius: 50%;
-      width: 30px;
-      height: 30px;
+      width: 100px;
+      height: 100px;
       animation: spin 1s linear infinite;
     }
 
@@ -103,14 +103,16 @@
 
       // Display the details of the selected random kanji
       outputDiv.innerHTML = `
-        <h2>${selectedKanjiData.kanji}</h2>
-        <p>Meanings: ${selectedKanjiData.meanings.join(', ')}</p>
+        <h2 style='font-size: 100px; margin: 0px; line-height: 100px; text-align: center;'>${selectedKanjiData.kanji}</h2>
         <p>Kun Readings: ${selectedKanjiData.kun_readings.join(', ')}</p>
         <p>On Readings: ${selectedKanjiData.on_readings.join(', ')}</p>
+        <p>Meanings: ${selectedKanjiData.meanings.join(', ')}</p>
         <p>JLPT Level: N${selectedKanjiData.jlpt}</p>
       `;
 	 
     });
+	
+	generateButton.click();
 	
   </script>
 </body>
