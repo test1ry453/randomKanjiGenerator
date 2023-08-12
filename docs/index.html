@@ -16,20 +16,22 @@
     }
     .container {
       text-align: center;
-      background-color: #ffffff;
+      background-color: #ee6060;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
     h2 {
       margin-top: 0;
-      color: #007bff;
+      color: #f7f7eb;
     }
     button {
-      background-color: #007bff;
+      background-color: #001226;
+	  font-weight: bold;
       color: white;
       border: none;
       border-radius: 5px;
+	  margin-top: 16px;
       padding: 10px 20px;
       cursor: pointer;
       transition: background-color 0.3s ease;
@@ -72,47 +74,52 @@
 <body>
   <div class="container">
     <h2>Mugen's Random Kanji</h2>
-    <button id="generateButton">Get Random Kanji</button>
-    <div id="output"></div>
+    <div id="output" style="background-color: #ee6060; color: #f7f7eb; font-weight: bold;"></div>
 	<div id="loadingIndicator" class="loading"></div>
+    <button id="generateButton">Get Random Kanji</button>
   </div>
 
   <script>
-    const generateButton = document.getElementById('generateButton');
-    const outputDiv = document.getElementById('output');
-    const loadingIndicator = document.getElementById('loadingIndicator');
+    (async () => {
+      const generateButton = document.getElementById('generateButton');
+      const outputDiv = document.getElementById('output');
+      const loadingIndicator = document.getElementById('loadingIndicator');
 
-    generateButton.addEventListener('click', async () => {
-      // Show loading indicator
-      loadingIndicator.style.display = 'block';
+      let joyoKanjiList = [];
 
-      // Fetch random kanji character from the "joyo" list
-      const randomJoyoResponse = await fetch('https://kanjiapi.dev/v1/kanji/joyo');
-      const randomJoyoData = await randomJoyoResponse.json();
+      async function getJoyoKanjiList() {
+        const randomJoyoResponse = await fetch('https://kanjiapi.dev/v1/kanji/joyo');
+        joyoKanjiList = await randomJoyoResponse.json();
+      }
 
-      // Choose a random kanji from the list
-      const randomIndex = Math.floor(Math.random() * randomJoyoData.length);
-      const randomKanji = randomJoyoData[randomIndex];
+      generateButton.addEventListener('click', async () => {
+        // Show loading indicator
+        loadingIndicator.style.display = 'block';
 
-      // Fetch details of the selected random kanji
-      const selectedKanjiResponse = await fetch(`https://kanjiapi.dev/v1/kanji/${randomKanji}`);
-      const selectedKanjiData = await selectedKanjiResponse.json();
+        // Choose a random kanji from the list
+        const randomIndex = Math.floor(Math.random() * joyoKanjiList.length);
+        const randomKanji = joyoKanjiList[randomIndex];
 
-      // Hide loading indicator
-      loadingIndicator.style.display = 'none';
+        // Fetch details of the selected random kanji
+        const selectedKanjiResponse = await fetch(`https://kanjiapi.dev/v1/kanji/${randomKanji}`);
+        const selectedKanjiData = await selectedKanjiResponse.json();
 
-      // Display the details of the selected random kanji
-      outputDiv.innerHTML = `
-        <h2 style='font-size: 100px; margin: 0px; line-height: 100px; text-align: center;'>${selectedKanjiData.kanji}</h2>
-        <p>Kun Readings: ${selectedKanjiData.kun_readings.join(', ')}</p>
-        <p>On Readings: ${selectedKanjiData.on_readings.join(', ')}</p>
-        <p>Meanings: ${selectedKanjiData.meanings.join(', ')}</p>
-        <p>JLPT Level: N${selectedKanjiData.jlpt}</p>
-      `;
-	 
-    });
-	
-	generateButton.click();
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+
+        // Display the details of the selected random kanji
+        outputDiv.innerHTML = `
+          <h2 style='font-size: 140px; margin: 0px; line-height: 140px; text-align: center;'>${selectedKanjiData.kanji}</h2>
+          <p><span style="padding: 3px 4px; background: #616161; border-radius: 6px;">Kun Readings:</span> ${selectedKanjiData.kun_readings.join(', ')}</p>
+          <p><span style="padding: 3px 4px; background: #616161; border-radius: 6px;">On Readings:</span> ${selectedKanjiData.on_readings.join(', ')}</p>
+          <p><span style="padding: 3px 4px; background: #616161; border-radius: 6px;">Meanings:</span> ${selectedKanjiData.meanings.join(', ')}</p>
+          <p><span style="padding: 3px 4px; background: #616161; border-radius: 6px;">JLPT Level:</span> N${selectedKanjiData.jlpt}</p>
+        `;
+      });
+
+      await getJoyoKanjiList();
+      generateButton.click();
+    })();
 	
   </script>
 </body>
